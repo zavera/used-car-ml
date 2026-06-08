@@ -12,7 +12,7 @@ feature_store:
 
 model:
   registry_path: "models"
-  mlflow_tracking_uri: "mlruns"
+  mlflow_tracking_uri: "sqlite:///mlruns/mlflow.db"
   experiment_name: "used-car-price"
   # Which model is promoted to production: ridge | poly
   champion: "poly"

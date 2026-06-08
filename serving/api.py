@@ -7,6 +7,9 @@ Endpoints:
   GET  /health           — model loaded + last drift check status
   GET  /drift/latest     — last drift report
   POST /pipeline/run     — manually trigger ingest + drift check + retrain if needed
+  POST /feedback         — save verbatim user comment
+  GET  /feedback/all     — return all raw feedback entries
+  GET  /feedback/narrative — Groq-generated narrative from feedback history
 """
 
 from __future__ import annotations
@@ -15,6 +18,8 @@ import logging
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from drift.report import load_latest_report
@@ -22,7 +27,13 @@ from serving.predictor import Predictor
 
 logger = logging.getLogger(__name__)
 app = FastAPI(title="Callisto Tech — Used Car Price API", version="1.0.0")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 predictor = Predictor()
+
+
+@app.get("/", include_in_schema=False)
+def root():
+    return FileResponse("static/index.html")
 
 
 class VehicleInput(BaseModel):
@@ -84,12 +95,48 @@ def drift_latest():
 
 
 @app.post("/pipeline/run")
-def pipeline_run():
-    """Manually trigger the full pipeline (ingest → drift → retrain if needed)."""
+def pipeline_run(force: bool = False):
+    """Manually trigger the full pipeline (ingest → drift → retrain if needed).
+    Pass ?force=true to retrain regardless of drift."""
     from orchestration.scheduler import run_pipeline_once
     import threading
-    threading.Thread(target=run_pipeline_once, daemon=True).start()
-    return {"message": "Pipeline triggered in background"}
+    threading.Thread(target=lambda: run_pipeline_once(force_retrain=force), daemon=True).start()
+    return {"message": f"Pipeline triggered in background (force_retrain={force})"}
+
+
+@app.post("/feedback")
+def submit_feedback(body: dict):
+    comment = (body.get("comment") or "").strip()
+    if not comment:
+        raise HTTPException(status_code=400, detail="comment is required")
+    if len(comment) > 2000:
+        raise HTTPException(status_code=400, detail="comment exceeds 2000 characters")
+    from feedback.store import save
+    entry = save(comment, context=body.get("context"))
+    return {"saved": True, "ts": entry["ts"]}
+
+
+@app.get("/feedback/all")
+def get_feedback():
+    from feedback.store import load_all
+    return {"entries": load_all()}
+
+
+@app.get("/feedback/narrative")
+def get_narrative():
+    from feedback.store import load_all
+    from feedback.narrative import generate
+    entries = load_all()
+    if not entries:
+        return {"narrative": None, "count": 0}
+    try:
+        narrative = generate()
+        return {"narrative": narrative, "count": len(entries)}
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc))
+    except Exception as exc:
+        logger.exception("Narrative generation failed")
+        raise HTTPException(status_code=500, detail="Narrative generation failed")
 
 
 @app.post("/model/reload")

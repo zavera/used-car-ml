@@ -1,0 +1,13 @@
+CALLISTO TECH PROPRIETARY LICENSE
+Copyright (c) 2026 Callisto Tech. All rights reserved.
+
+This software and its associated documentation, models, pipelines, and
+interfaces (the "Software") are the exclusive property of Callisto Tech.
+
+Permission is granted solely to authorized licensees to use the Software
+for internal business purposes. No part of the Software may be reproduced,
+distributed, sublicensed, reverse-engineered, or used to train competing
+models without the prior written consent of Callisto Tech.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+CALLISTO TECH SHALL NOT BE LIABLE FOR ANY DAMAGES ARISING FROM USE.

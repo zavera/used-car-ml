@@ -24,7 +24,7 @@ import numpy as np
 import pandas as pd
 from sklearn.feature_selection import SequentialFeatureSelector
 from sklearn.linear_model import LinearRegression, Ridge
-from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.model_selection import GridSearchCV, cross_val_score, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 
@@ -90,6 +90,7 @@ def train_poly(
     n_features_to_select: int = 4,
     test_size: float = 0.30,
     random_state: int = 42,
+    sfs_sample_size: int = 20_000,
 ) -> tuple[Pipeline, list[str], float, float]:
     (X_train, X_test, y_train, y_test), features = _split(df, test_size, random_state)
 
@@ -101,21 +102,38 @@ def train_poly(
     X_train_p = poly.fit_transform(X_train_s)
     X_test_p = poly.transform(X_test_s)
 
-    lr = LinearRegression()
-    sfs = SequentialFeatureSelector(lr, n_features_to_select=n_features_to_select, cv=3)
-    sfs.fit(X_train_p, y_train)
+    # SFS on a subsample only — fitting on 426K poly-expanded features is prohibitively slow.
+    # Feature selection result is stable on 20K rows; final model is then fit on the full set.
+    rng = np.random.default_rng(random_state)
+    sample_idx = rng.choice(len(X_train_p), size=min(sfs_sample_size, len(X_train_p)), replace=False)
+    lr_sfs = LinearRegression()
+    sfs = SequentialFeatureSelector(lr_sfs, n_features_to_select=n_features_to_select, cv=3)
+    sfs.fit(X_train_p[sample_idx], y_train[sample_idx])
 
     X_train_sel = sfs.transform(X_train_p)
     X_test_sel = sfs.transform(X_test_p)
 
+    lr = LinearRegression()
     lr.fit(X_train_sel, y_train)
     train_mse = float(np.mean((lr.predict(X_train_sel) - y_train) ** 2))
-    test_mse = float(np.mean((lr.predict(X_test_sel) - y_test) ** 2))
-    logger.info("Poly degree=%d n_sel=%d  train_mse=%.4f  test_mse=%.4f",
-                degree, n_features_to_select, train_mse, test_mse)
+    test_mse  = float(np.mean((lr.predict(X_test_sel)  - y_test)  ** 2))
+
+    # 5-fold CV on the selected feature set — subsampled to keep runtime manageable
+    cv_idx = rng.choice(len(X_train_sel), size=min(sfs_sample_size, len(X_train_sel)), replace=False)
+    cv_scores = cross_val_score(
+        LinearRegression(), X_train_sel[cv_idx], y_train[cv_idx],
+        cv=5, scoring="neg_mean_squared_error"
+    )
+    cv_mse      = float(-cv_scores.mean())
+    cv_mse_std  = float(cv_scores.std())
+    logger.info(
+        "Poly degree=%d n_sel=%d  train_mse=%.4f  test_mse=%.4f  cv_mse=%.4f (+/-%.4f)",
+        degree, n_features_to_select, train_mse, test_mse, cv_mse, cv_mse_std,
+    )
 
     # Bundle into a dict so inference can replay the same transform chain
-    bundle = {"scaler": scaler, "poly": poly, "sfs": sfs, "lr": lr}
+    bundle = {"scaler": scaler, "poly": poly, "sfs": sfs, "lr": lr,
+              "cv_mse": cv_mse, "cv_mse_std": cv_mse_std}
     return bundle, features, train_mse, test_mse
 
 
@@ -153,7 +171,12 @@ def run_training(
             test_size=tc["test_size"],
             random_state=tc["random_state"],
         )
-        mlflow.log_metrics({"poly_train_mse": poly_train_mse, "poly_test_mse": poly_test_mse})
+        mlflow.log_metrics({
+            "poly_train_mse":   poly_train_mse,
+            "poly_test_mse":    poly_test_mse,
+            "poly_cv_mse":      poly_bundle["cv_mse"],
+            "poly_cv_mse_std":  poly_bundle["cv_mse_std"],
+        })
         mlflow.log_param("champion", champion)
 
         chosen_model = poly_bundle if champion == "poly" else ridge_model
