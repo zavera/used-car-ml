@@ -1,0 +1,51 @@
+# Copyright (c) 2026 Callisto Tech — see LICENSE
+
+data:
+  raw_path: "data/raw"
+  processed_path: "data/processed"
+  # Drop a new CSV here named vehicles_YYYYMMDD.csv to trigger ingestion
+  filename_pattern: "vehicles_*.csv"
+
+feature_store:
+  store_path: "data/processed/feature_store.parquet"
+  reference_path: "data/processed/reference_features.parquet"
+
+model:
+  registry_path: "models"
+  mlflow_tracking_uri: "mlruns"
+  experiment_name: "used-car-price"
+  # Which model is promoted to production: ridge | poly
+  champion: "poly"
+
+training:
+  test_size: 0.30
+  random_state: 42
+  cv_folds: 5
+  ridge:
+    alpha_grid: [0.01, 0.1, 1.0, 10.0, 100.0, 200.0, 300.0]
+  poly:
+    degree: 3
+    n_features_to_select: 4
+  price_floor: 1000
+  odometer_floor: 500
+
+drift:
+  # PSI threshold: >0.2 = major drift, retrain triggered
+  psi_threshold: 0.2
+  # KS p-value threshold for continuous features
+  ks_pvalue_threshold: 0.05
+  # Chi-squared p-value for categoricals
+  chi2_pvalue_threshold: 0.05
+  # How many new rows must arrive before a drift check runs
+  min_new_rows: 500
+  report_path: "data/processed/drift_reports"
+
+serving:
+  host: "0.0.0.0"
+  port: 8000
+
+scheduler:
+  # Drift check interval (cron expression)
+  drift_check_cron: "0 */6 * * *"     # every 6 hours
+  # Full retrain interval regardless of drift
+  retrain_cron: "0 2 * * 0"           # Sundays at 2am
