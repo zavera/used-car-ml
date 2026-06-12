@@ -49,48 +49,112 @@
     }
 
     header {
-      background: var(--accent);
-      padding: 0 40px;
-      height: 56px;
+      background: linear-gradient(135deg, #1A2533 0%, #2B3A4A 60%, #1E3246 100%);
+      padding: 0 48px;
+      height: 68px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.018'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+      pointer-events: none;
+    }
+
+    .header-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      position: relative;
+      z-index: 1;
     }
 
     .logo {
-      font-size: 15px;
+      font-size: 17px;
       font-weight: 600;
       color: #FFFFFF;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-divider {
+      width: 1px;
+      height: 14px;
+      background: rgba(255,255,255,0.25);
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.18em;
       text-transform: uppercase;
     }
 
-    .logo span {
+    .header-tagline {
+      font-size: 11px;
       font-weight: 300;
-      opacity: 0.55;
-      margin-left: 6px;
-      text-transform: none;
-      letter-spacing: 0;
-      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.04em;
+      font-style: italic;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .header-meta-label {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
     }
 
     .status-pill {
       display: flex;
       align-items: center;
       gap: 7px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.55);
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.6);
       font-weight: 400;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.09);
+      padding: 5px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.02em;
     }
 
     .status-dot {
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: #888;
       transition: background 0.4s;
+      flex-shrink: 0;
     }
-    .status-dot.online  { background: #5FAD82; }
+    .status-dot.online  { background: #5FAD82; box-shadow: 0 0 6px rgba(95,173,130,0.5); }
     .status-dot.offline { background: #B05555; }
 
     main {
@@ -421,6 +485,119 @@
     .drift .drift-dot { background: #B08030; }
     .no-data .drift-dot { background: var(--text-muted); }
 
+    /* ── Market Comparison Card ── */
+    .compare-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .compare-sources {
+      padding: 16px 24px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .compare-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+    }
+
+    .compare-row.model-row {
+      background: var(--accent-dim);
+      border-color: #c8d4df;
+    }
+
+    .compare-source-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-mid);
+    }
+
+    .compare-source-meta {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .compare-source-price {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .compare-source-price.unavailable {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .compare-median-row {
+      margin: 12px 24px 0;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .compare-median-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .compare-median-price {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .compare-delta-row {
+      margin: 10px 24px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .compare-delta-label {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .compare-delta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+
+    .compare-delta-badge.ok    { background: var(--positive-bg); color: var(--positive); }
+    .compare-delta-badge.drift { background: #F5EDDE; color: #7A5A25; }
+    .compare-delta-badge.none  { background: var(--bg); color: var(--text-muted); }
+
+    .compare-loading {
+      padding: 32px 24px;
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
     /* ── Loading spinner ── */
     .spinner {
       display: inline-block;
@@ -520,10 +697,22 @@
 <div class="shell">
 
   <header>
-    <div class="logo">Callisto <span>Used Car Valuation &nbsp;&middot;&nbsp; AI Powered</span></div>
-    <div class="status-pill">
-      <div class="status-dot" id="statusDot"></div>
-      <span id="statusText">Checking model...</span>
+    <div class="header-brand">
+      <div class="logo">
+        Callisto
+        <div class="logo-divider"></div>
+        <span class="logo-sub">Intelligent Vehicle Valuation</span>
+      </div>
+      <div class="header-tagline">Precision pricing informed by market intelligence &amp; predictive analytics</div>
+    </div>
+    <div class="header-right">
+      <div class="header-meta">
+        <span class="header-meta-label">Inference Engine</span>
+        <div class="status-pill">
+          <div class="status-dot" id="statusDot"></div>
+          <span id="statusText">Checking model...</span>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -693,6 +882,17 @@
         </div>
       </div>
 
+      <!-- Market Comparison -->
+      <div class="compare-card" id="compareCard" style="display:none">
+        <div class="info-header">
+          <div class="info-title">Market Comparison</div>
+          <span id="compareSpinner" style="font-size:11px;color:var(--text-muted);">Loading...</span>
+        </div>
+        <div id="compareBody">
+          <div class="compare-loading">Fetching market data...</div>
+        </div>
+      </div>
+
       <!-- Drift / Model status -->
       <div class="info-card">
         <div class="info-header">
@@ -858,7 +1058,9 @@
 
       const d = await r.json();
       showResult(d, payload);
+      loadMarketComparison(payload);
     } catch (err) {
+      $('compareCard').style.display = 'none';
       showError('Could not reach the valuation API. Is the server running?');
     } finally {
       btn.disabled = false;
@@ -870,6 +1072,7 @@
     $('resultEmpty').style.display  = 'none';
     $('resultBody').style.display   = 'none';
     $('errorBanner').style.display  = 'none';
+    $('compareCard').style.display  = 'none';
   }
 
   function showError(msg) {
@@ -988,6 +1191,99 @@
         if (i >= chars.length) clearInterval(interval);
       }, 12);
     } catch { /* silent — Groq key may not be set */ }
+  }
+
+  // ── Market Comparison ─────────────────────────────────────────────────────
+  async function loadMarketComparison(payload) {
+    const card    = $('compareCard');
+    const body    = $('compareBody');
+    const spinner = $('compareSpinner');
+
+    card.style.display = 'block';
+    spinner.textContent = 'Loading...';
+    body.innerHTML = '<div class="compare-loading">Fetching market data…</div>';
+
+    try {
+      const r = await fetch('/market/compare', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!r.ok) throw new Error('API error');
+      const d = await r.json();
+      renderComparison(d);
+    } catch {
+      body.innerHTML = '<div class="compare-loading" style="color:var(--text-muted)">Market data unavailable.</div>';
+    } finally {
+      spinner.textContent = '';
+    }
+  }
+
+  function fmtPrice(n) {
+    return '$' + Math.round(n).toLocaleString('en-US');
+  }
+
+  function renderComparison(d) {
+    const body = $('compareBody');
+
+    // Source rows
+    const sourceRows = d.sources.map(s => {
+      const priceHtml = s.available
+        ? `<div class="compare-source-price">${fmtPrice(s.price)}</div>`
+        : `<div class="compare-source-price unavailable">${s.note || 'Unavailable'}</div>`;
+      const meta = s.available ? `${s.count} listing${s.count !== 1 ? 's' : ''}${s.note ? ' · ' + s.note : ''}` : '';
+      return `
+        <div class="compare-row">
+          <div>
+            <div class="compare-source-name">${s.name}</div>
+            ${meta ? `<div class="compare-source-meta">${meta}</div>` : ''}
+          </div>
+          ${priceHtml}
+        </div>`;
+    }).join('');
+
+    // Model row
+    const modelRow = `
+      <div class="compare-row model-row">
+        <div>
+          <div class="compare-source-name">Your Model</div>
+          <div class="compare-source-meta">${d.model_name} · Callisto prediction</div>
+        </div>
+        <div class="compare-source-price">${fmtPrice(d.model_prediction)}</div>
+      </div>`;
+
+    // Median row
+    const medianHtml = d.market_median != null ? `
+      <div class="compare-median-row">
+        <div class="compare-median-label">Overall Market Median</div>
+        <div class="compare-median-price">${fmtPrice(d.market_median)}</div>
+      </div>` : '';
+
+    // Delta badge
+    let deltaHtml = '';
+    if (d.delta != null) {
+      const cls   = d.market_drift_triggered ? 'drift' : 'ok';
+      const icon  = d.market_drift_triggered ? '⚠' : '✓';
+      const label = d.market_drift_triggered
+        ? `${fmtPrice(d.delta)} over threshold — retraining triggered`
+        : `${fmtPrice(d.delta)} within ${fmtPrice(d.drift_threshold)} threshold`;
+      deltaHtml = `
+        <div class="compare-delta-row">
+          <div class="compare-delta-label">Model vs market</div>
+          <div class="compare-delta-badge ${cls}">${icon} ${label}</div>
+        </div>`;
+    } else {
+      deltaHtml = `
+        <div class="compare-delta-row">
+          <div class="compare-delta-label">Market median</div>
+          <div class="compare-delta-badge none">No market data available</div>
+        </div>`;
+    }
+
+    body.innerHTML = `
+      <div class="compare-sources">${sourceRows}${modelRow}</div>
+      ${medianHtml}
+      ${deltaHtml}`;
   }
 
   // ── Init ──────────────────────────────────────────────────────────────────

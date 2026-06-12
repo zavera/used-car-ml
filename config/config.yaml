@@ -40,6 +40,17 @@ drift:
   min_new_rows: 500
   report_path: "data/processed/drift_reports"
 
+market_compare:
+  # Set your eBay developer App ID at developer.ebay.com (free account)
+  ebay_app_id: "YOUR_EBAY_APP_ID_HERE"
+  # Retrain is triggered when |model_price - market_median| exceeds this (USD)
+  price_drift_threshold: 1000
+  adapters:
+    dataset:
+      enabled: true
+    ebay:
+      enabled: true
+
 serving:
   host: "0.0.0.0"
   port: 8000

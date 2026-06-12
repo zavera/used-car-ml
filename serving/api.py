@@ -139,6 +139,52 @@ def get_narrative():
         raise HTTPException(status_code=500, detail="Narrative generation failed")
 
 
+@app.post("/market/compare")
+def market_compare(vehicle: VehicleInput):
+    """
+    Run the model prediction then compare against market sources (training dataset + eBay).
+    If |model_price − market_median| > price_drift_threshold, retrain is triggered in background.
+    """
+    try:
+        result = predictor.predict(vehicle.model_dump())
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc))
+
+    model_price = result["predicted_price"]
+
+    from market.aggregator import get_aggregator
+    aggregator  = get_aggregator()
+    comparison  = aggregator.compare(vehicle.model_dump(), model_price)
+
+    if comparison.market_drift_triggered:
+        logger.info(
+            "Market price drift: model=$%.0f market_median=$%.0f delta=$%.0f — triggering retrain",
+            model_price, comparison.market_median, comparison.delta,
+        )
+        import threading
+        from orchestration.scheduler import run_pipeline_once
+        threading.Thread(target=lambda: run_pipeline_once(force_retrain=True), daemon=True).start()
+
+    return {
+        "model_prediction":         round(model_price, 2),
+        "model_name":               result["model"],
+        "sources": [
+            {
+                "name":      e.source,
+                "price":     round(e.price, 2) if e.available else None,
+                "count":     e.count,
+                "available": e.available,
+                "note":      e.note,
+            }
+            for e in comparison.sources
+        ],
+        "market_median":            round(comparison.market_median, 2) if comparison.market_median is not None else None,
+        "delta":                    round(comparison.delta, 2) if comparison.delta is not None else None,
+        "market_drift_triggered":   comparison.market_drift_triggered,
+        "drift_threshold":          comparison.drift_threshold,
+    }
+
+
 @app.post("/model/reload")
 def model_reload():
     predictor.reload()

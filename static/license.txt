@@ -1,13 +1,61 @@
-CALLISTO TECH PROPRIETARY LICENSE
+CALLISTO TECH PROPRIETARY SOFTWARE LICENSE
+
 Copyright (c) 2026 Callisto Tech. All rights reserved.
+Authored by Ambreen Zaver.
 
-This software and its associated documentation, models, pipelines, and
-interfaces (the "Software") are the exclusive property of Callisto Tech.
+────────────────────────────────────────────────────────────────────────────────
+NOTICE: THIS IS PROPRIETARY SOFTWARE. ALL RIGHTS ARE RESERVED BY THE OWNER.
+────────────────────────────────────────────────────────────────────────────────
 
-Permission is granted solely to authorized licensees to use the Software
-for internal business purposes. No part of the Software may be reproduced,
-distributed, sublicensed, reverse-engineered, or used to train competing
-models without the prior written consent of Callisto Tech.
+This software, including but not limited to its source code, object code,
+algorithms, model architecture, trained model weights, feature engineering
+pipelines, data preprocessing logic, API design, user interface, configuration
+schemas, and all associated documentation (collectively, the "Software"), is the
+exclusive intellectual property of Callisto Tech and its author, Ambreen Zaver.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
-CALLISTO TECH SHALL NOT BE LIABLE FOR ANY DAMAGES ARISING FROM USE.
+NO LICENSE IS GRANTED — EXPRESS OR IMPLIED — TO ANY PERSON OR ENTITY TO:
+
+  1. Copy, reproduce, or duplicate the Software or any portion thereof.
+  2. Modify, adapt, translate, or create derivative works based on the Software.
+  3. Distribute, publish, sublicense, sell, rent, lease, or otherwise transfer
+     the Software or any rights therein to any third party.
+  4. Reverse-engineer, decompile, disassemble, or otherwise attempt to derive
+     the source code, model architecture, or underlying logic of the Software.
+  5. Use the Software, in whole or in part, to train, fine-tune, or inform any
+     competing machine learning model, product, or service.
+  6. Incorporate any component of the Software into another system, product,
+     or open-source project without prior written authorization.
+  7. Claim ownership of, or misrepresent the origin of, the Software or any
+     part thereof.
+
+PERMITTED USE:
+
+  Use of the Software is permitted solely by Ambreen Zaver and individuals
+  or organizations who have received explicit, written authorization from
+  Callisto Tech. Any authorized use is limited strictly to the scope defined
+  in that written agreement and may be revoked at any time.
+
+INTELLECTUAL PROPERTY:
+
+  All inventions, innovations, model designs, training methodologies, and
+  technical approaches embodied in the Software are the sole property of
+  Callisto Tech. No implied license, patent license, or trademark license
+  is granted by this notice or by any use of the Software.
+
+ENFORCEMENT:
+
+  Unauthorized use, reproduction, or distribution of the Software or any
+  portion thereof may result in severe civil and criminal penalties and will
+  be prosecuted to the maximum extent permitted under applicable law,
+  including applicable copyright and trade secret laws.
+
+DISCLAIMER:
+
+  THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS
+  OR IMPLIED. CALLISTO TECH AND AMBREEN ZAVER SHALL NOT BE LIABLE FOR ANY
+  CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM OR IN CONNECTION WITH THE
+  SOFTWARE OR THE USE THEREOF.
+
+────────────────────────────────────────────────────────────────────────────────
+For licensing inquiries or written authorization requests, contact Callisto Tech.
+────────────────────────────────────────────────────────────────────────────────
