@@ -29,9 +29,10 @@ def drop_uninformative(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def fill_categoricals(df: pd.DataFrame) -> pd.DataFrame:
-    if "state" in df.columns:
-        df = df.copy()
-        df["state"] = df["state"].str.lower().str.strip()
+    df = df.copy()
+    for col in ("state", "model"):
+        if col in df.columns:
+            df[col] = df[col].str.lower().str.strip()
     cat_cols = df.select_dtypes(include="object").columns
     return df.assign(**{c: df[c].fillna("Unknown") for c in cat_cols})
 

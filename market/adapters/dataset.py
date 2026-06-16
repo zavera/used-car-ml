@@ -38,7 +38,7 @@ class DatasetAdapter(PricingAdapter):
         files = sorted(glob.glob(os.path.join(self._raw_path, self._pattern)))
         if not files:
             raise FileNotFoundError(f"No CSV found at {self._raw_path}/{self._pattern}")
-        df = pd.read_csv(files[-1], usecols=["price", "year", "manufacturer", "condition", "state"])
+        df = pd.read_csv(files[-1], usecols=["price", "year", "manufacturer", "model", "condition", "state"])
         df = df.dropna(subset=["price", "year", "manufacturer"])
         df["price"] = pd.to_numeric(df["price"], errors="coerce")
         df["year"]  = pd.to_numeric(df["year"],  errors="coerce")
@@ -46,6 +46,7 @@ class DatasetAdapter(PricingAdapter):
         df["manufacturer"] = df["manufacturer"].str.lower().str.strip()
         df["condition"]    = df["condition"].str.lower().str.strip()
         df["state"]        = df["state"].str.lower().str.strip().fillna("")
+        df["model"]        = df["model"].astype(str).str.lower().str.strip()
         self._df = df
         logger.info("DatasetAdapter loaded %d rows from %s", len(df), files[-1])
         return self._df
@@ -60,9 +61,11 @@ class DatasetAdapter(PricingAdapter):
         manufacturer = str(vehicle.get("manufacturer", "")).lower().strip()
         condition    = str(vehicle.get("condition", "")).lower().strip()
         state        = str(vehicle.get("state", "")).lower().strip()
+        model        = str(vehicle.get("model", "")).lower().strip()
         use_state    = state and state != "unknown" and state in df["state"].values
+        use_model    = model and model in df["model"].values
 
-        def _filter(yr_window: int, use_condition: bool, state_filter: bool) -> pd.Series:
+        def _filter(yr_window: int, use_condition: bool, state_filter: bool, model_filter: bool) -> pd.Series:
             mask = (
                 (df["manufacturer"] == manufacturer)
                 & df["year"].between(year - yr_window, year + yr_window)
@@ -71,16 +74,24 @@ class DatasetAdapter(PricingAdapter):
                 mask &= df["condition"] == condition
             if state_filter and use_state:
                 mask &= df["state"] == state
+            if model_filter and use_model:
+                mask &= df["model"] == model
             return df.loc[mask, "price"].dropna()
 
-        # Try narrow: same state + condition + year ±2
-        subset = _filter(2, True, True) if use_state else _filter(2, True, False)
-        # Fall back: drop state filter but keep condition
+        # Tiers from most to least specific: model+state -> model -> state -> manufacturer only
+        used_model = False
+        used_state = False
+        subset = pd.Series(dtype=float)
+        for m_filt, s_filt in [(True, True), (True, False), (False, True), (False, False)]:
+            candidate = _filter(2, True, s_filt, m_filt)
+            if len(candidate) >= MIN_MATCH:
+                subset, used_model, used_state = candidate, m_filt and use_model, s_filt and use_state
+                break
+            subset = candidate  # keep the widest attempt as fallback if none hit MIN_MATCH
+        # Final fallback: drop condition, widen year window
         if len(subset) < MIN_MATCH:
-            subset = _filter(2, True, False)
-        # Fall back: drop condition too
-        if len(subset) < MIN_MATCH:
-            subset = _filter(3, False, False)
+            subset = _filter(3, False, False, False)
+            used_model = used_state = False
 
         if len(subset) < 3:
             return PriceEstimate(source=self.name, price=0, count=0, available=False,
@@ -88,10 +99,13 @@ class DatasetAdapter(PricingAdapter):
 
         p25 = int(np.percentile(subset, 25))
         p75 = int(np.percentile(subset, 75))
-        region_note = f" in {state.upper()}" if use_state and len(_filter(2, True, True)) >= MIN_MATCH else ""
+        tags = []
+        if used_model: tags.append(model.title())
+        if used_state: tags.append(state.upper())
+        tag_note = f" ({', '.join(tags)})" if tags else ""
         return PriceEstimate(
             source=self.name,
             price=float(np.median(subset)),
             count=len(subset),
-            note=f"p25 ${p25:,} – p75 ${p75:,}{region_note}",
+            note=f"p25 ${p25:,} – p75 ${p75:,}{tag_note}",
         )

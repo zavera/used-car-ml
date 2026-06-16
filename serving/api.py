@@ -39,6 +39,7 @@ def root():
 class VehicleInput(BaseModel):
     year: int = Field(..., ge=1900, le=2026, example=2018)
     manufacturer: str = Field(..., example="toyota")
+    model: str = Field(default="", example="Camry")
     condition: Literal["new", "like new", "excellent", "good", "fair", "salvage"] = "good"
     cylinders: Literal[
         "3 cylinders", "4 cylinders", "5 cylinders", "6 cylinders",

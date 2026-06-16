@@ -10,7 +10,7 @@ from __future__ import annotations
 REFERENCE_YEAR = 2025
 
 # Columns dropped at ingest — carry no signal or are too granular
-DROP_COLUMNS = ["id", "VIN", "region", "model"]
+DROP_COLUMNS = ["id", "VIN", "region"]
 
 # Ordinal encoding maps — order reflects quality/value progression
 CONDITION_MAP = {
@@ -39,7 +39,7 @@ CYLINDERS_MAP = {
 CLEAN_TITLE_VALUES = {"clean"}
 
 # Categorical features encoded via mean-target encoding (computed from training data)
-MEAN_TARGET_ENCODE_COLS = ["manufacturer", "fuel", "drive", "size", "type", "paint_color", "state"]
+MEAN_TARGET_ENCODE_COLS = ["manufacturer", "fuel", "drive", "size", "type", "paint_color", "state", "model"]
 
 # Final feature columns fed to the model (post-encoding)
 FEATURE_COLUMNS = [
@@ -55,6 +55,7 @@ FEATURE_COLUMNS = [
     "type_encoded",
     "paint_color_encoded",
     "state_encoded",
+    "model_encoded",
 ]
 
 TARGET_COLUMN = "price"

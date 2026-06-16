@@ -51,8 +51,11 @@ class EbayAdapter(PricingAdapter):
 
         year         = vehicle.get("year", "")
         manufacturer = vehicle.get("manufacturer", "")
+        model        = str(vehicle.get("model", "")).strip()
         vtype        = vehicle.get("type", "")
-        keywords     = f"{year} {manufacturer} {vtype}".strip()
+        # Real model name matches how listings are actually titled (e.g. "2005 honda accord");
+        # body type ("sedan") is a feature-engineering category, not a search term sellers use.
+        keywords     = f"{year} {manufacturer} {model}".strip() if model else f"{year} {manufacturer} {vtype}".strip()
 
         params = {
             "OPERATION-NAME":               "findCompletedItems",

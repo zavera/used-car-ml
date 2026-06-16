@@ -5,7 +5,12 @@ This codebase is the exclusive property of Callisto Tech, authored by Ambreen Za
 All code, model architecture, pipelines, and components are fully proprietary.
 
 ## Commits
-- Author: Ambreen Zaver <zaver.ambreen@gmail.com>
+- Author: Ambreen Zaver <zaver.ambreen@gmail.com> — this must be the **zavera** GitHub account (matches the `origin` remote, github.com/zavera/used-car-ml). The machine's global git config defaults to a different identity (`azaver1 <azaver1@jh.edu>`), so this repo's **local** git config is intentionally pinned to the zavera identity:
+  ```
+  git config --local user.name "Ambreen Zaver"
+  git config --local user.email "zaver.ambreen@gmail.com"
+  ```
+  Do not rely on `--author` overrides per-commit — the local config above makes every commit in this repo correct by default. If a fresh clone of this repo is missing that local config, set it before committing.
 - NEVER add `Co-Authored-By: Claude` or any AI attribution to commit messages.
 - Commit messages should reflect Callisto Tech authorship only.
 

@@ -80,7 +80,8 @@ class EnterpriseAdapter(PricingAdapter):
         }
         ent_condition = _cond_map.get(condition, "Very Good")
 
-        guessed_model = _TYPE_TO_MODEL.get(vtype, "Camry")
+        real_model = str(vehicle.get("model", "")).strip().title()
+        guessed_model = real_model or _TYPE_TO_MODEL.get(vtype, "Camry")
 
         try:
             with sync_playwright() as pw:
@@ -153,7 +154,7 @@ class EnterpriseAdapter(PricingAdapter):
                     source=self.name,
                     price=float(prices[0]),
                     count=1,
-                    note=f"ZIP {zip_code} · model est. ({guessed_model})",
+                    note=f"ZIP {zip_code} · {'model: ' if real_model else 'model est.: '}{guessed_model}",
                 )
 
         except PWTimeout:

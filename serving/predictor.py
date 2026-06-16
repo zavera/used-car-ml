@@ -50,6 +50,8 @@ class Predictor:
 
         import pandas as pd
         df = pd.DataFrame([raw_input])
+        if "model" in df.columns:
+            df["model"] = df["model"].astype(str).str.lower().str.strip()
 
         df = encode_ordinals(df)
         df = engineer_features(df)
