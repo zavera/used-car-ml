@@ -2,10 +2,11 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "callisto-ui",
-      "runtimeExecutable": "/Users/ambreenzaver/IdeaProjects/used-car-ml/.venv/bin/python3",
-      "runtimeArgs": ["main.py"],
-      "port": 8000
+      "name": "vega-ui",
+      "runtimeExecutable": "/Users/ambreenzaver/IdeaProjects/used-car-ml/.venv/bin/uvicorn",
+      "runtimeArgs": ["serving.api:app", "--host", "0.0.0.0", "--port", "8081"],
+      "port": 8081,
+      "autoPort": false
     }
   ]
 }

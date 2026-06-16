@@ -55,6 +55,12 @@ class VehicleInput(BaseModel):
         "wagon", "van", "convertible", "mini-van", "offroad", "bus", "other"
     ] = "sedan"
     paint_color: str = Field(default="white", example="silver")
+    state: Literal[
+        "ak", "al", "ar", "az", "ca", "co", "ct", "dc", "de", "fl",
+        "ga", "hi", "id", "il", "ma", "nc", "ny", "or", "pa", "tx", "wa", "wi",
+        "unknown"
+    ] = "unknown"
+    zip_code: str = Field(default="", example="90210")
 
 
 class PredictionResponse(BaseModel):

@@ -17,11 +17,12 @@ from market.adapters.base import PricingAdapter, PriceEstimate
 
 logger = logging.getLogger(__name__)
 
-_FINDING_URL    = "https://svcs.ebay.com/services/search/FindingService/v1"
-_MOTORS_CAT     = "6001"   # eBay Motors → Cars & Trucks
-_PRICE_MIN      = 1_000
-_PRICE_MAX      = 150_000
-_PLACEHOLDER    = "YOUR_EBAY_APP_ID_HERE"
+_FINDING_URL_PROD    = "https://svcs.ebay.com/services/search/FindingService/v1"
+_FINDING_URL_SANDBOX = "https://svcs.sandbox.ebay.com/services/search/FindingService/v1"
+_MOTORS_CAT          = "6001"   # eBay Motors → Cars & Trucks
+_PRICE_MIN           = 1_000
+_PRICE_MAX           = 150_000
+_PLACEHOLDER         = "YOUR_EBAY_APP_ID_HERE"
 
 
 class EbayAdapter(PricingAdapter):
@@ -29,6 +30,10 @@ class EbayAdapter(PricingAdapter):
 
     def __init__(self, app_id: str):
         self._app_id = (app_id or "").strip()
+        self._url = (
+            _FINDING_URL_SANDBOX if "SBX" in self._app_id.upper()
+            else _FINDING_URL_PROD
+        )
 
     def _unconfigured(self) -> bool:
         return (
@@ -63,7 +68,7 @@ class EbayAdapter(PricingAdapter):
 
         try:
             with httpx.Client(timeout=8.0) as client:
-                resp = client.get(_FINDING_URL, params=params)
+                resp = client.get(self._url, params=params)
             resp.raise_for_status()
             data = resp.json()
 

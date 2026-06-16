@@ -10,7 +10,7 @@ from __future__ import annotations
 REFERENCE_YEAR = 2025
 
 # Columns dropped at ingest — carry no signal or are too granular
-DROP_COLUMNS = ["id", "VIN", "region", "state", "model"]
+DROP_COLUMNS = ["id", "VIN", "region", "model"]
 
 # Ordinal encoding maps — order reflects quality/value progression
 CONDITION_MAP = {
@@ -39,7 +39,7 @@ CYLINDERS_MAP = {
 CLEAN_TITLE_VALUES = {"clean"}
 
 # Categorical features encoded via mean-target encoding (computed from training data)
-MEAN_TARGET_ENCODE_COLS = ["manufacturer", "fuel", "drive", "size", "type", "paint_color"]
+MEAN_TARGET_ENCODE_COLS = ["manufacturer", "fuel", "drive", "size", "type", "paint_color", "state"]
 
 # Final feature columns fed to the model (post-encoding)
 FEATURE_COLUMNS = [
@@ -54,6 +54,7 @@ FEATURE_COLUMNS = [
     "size_encoded",
     "type_encoded",
     "paint_color_encoded",
+    "state_encoded",
 ]
 
 TARGET_COLUMN = "price"
@@ -61,4 +62,4 @@ LOG_TARGET_COLUMN = "log_price"
 
 # Drift monitoring: which features use PSI (continuous) vs chi2 (categorical)
 CONTINUOUS_DRIFT_FEATURES = ["car_age", "mileage_per_year", "cylinders_encoded"]
-CATEGORICAL_DRIFT_FEATURES = ["fuel", "drive", "type", "condition", "title_status"]
+CATEGORICAL_DRIFT_FEATURES = ["fuel", "drive", "type", "condition", "title_status", "state"]

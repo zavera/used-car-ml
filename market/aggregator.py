@@ -73,6 +73,7 @@ def get_aggregator() -> MarketAggregator:
     from config_loader import load_config
     from market.adapters.dataset import DatasetAdapter
     from market.adapters.ebay import EbayAdapter
+    from market.adapters.enterprise import EnterpriseAdapter
 
     cfg    = load_config()
     mc_cfg = cfg.get("market_compare", {})
@@ -89,6 +90,9 @@ def get_aggregator() -> MarketAggregator:
     if ac_cfg.get("ebay", {}).get("enabled", True):
         app_id = mc_cfg.get("ebay_app_id", "YOUR_EBAY_APP_ID_HERE")
         adapters.append(EbayAdapter(app_id=app_id))
+
+    if ac_cfg.get("enterprise", {}).get("enabled", False):
+        adapters.append(EnterpriseAdapter())
 
     threshold = float(mc_cfg.get("price_drift_threshold", 1000.0))
     _instance = MarketAggregator(adapters=adapters, drift_threshold=threshold)

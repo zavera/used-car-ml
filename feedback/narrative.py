@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 GROQ_MODEL = "llama-3.3-70b-versatile"
 
 SYSTEM_PROMPT = """\
-You are an analyst for Callisto Tech, a used car valuation platform.
+You are an analyst for Vega by Callisto Tech, a used car valuation platform.
 You receive verbatim user feedback submitted through the app.
 Write a concise, professional narrative (3–5 sentences) that synthesises
 the themes, sentiments, and any recurring concerns across all comments.

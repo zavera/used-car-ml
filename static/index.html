@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Callisto — Used Car Valuation</title>
+  <title>Vega — Used Car Valuation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -11,17 +11,19 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:          #F2F1EE;
+      --bg:          #F4F2EE;
       --surface:     #FFFFFF;
-      --surface-alt: #F8F7F5;
-      --border:      #DDD9D3;
-      --border-light:#ECEAE6;
+      --surface-alt: #F8F6F2;
+      --border:      #DDD9D2;
+      --border-light:#EDEAE5;
       --text-primary:#1C1C1C;
-      --text-mid:    #4A4A4A;
-      --text-muted:  #8A8680;
-      --accent:      #2B3A4A;
-      --accent-light:#3D5166;
-      --accent-dim:  #E8ECF0;
+      --text-mid:    #4A4745;
+      --text-muted:  #8A8480;
+      --accent:      #302D3B;
+      --accent-light:#413D50;
+      --accent-dim:  #F0EDE8;
+      --brand-tan:   #CAA882;
+      --brand-tan-dk:#A8845F;
       --positive:    #3A6351;
       --positive-bg: #EDF3F0;
       --error:       #7A3535;
@@ -49,15 +51,24 @@
     }
 
     header {
-      background: linear-gradient(135deg, #1A2533 0%, #2B3A4A 60%, #1E3246 100%);
-      padding: 0 48px;
+      background: linear-gradient(135deg, #28263300%, #302D3B 50%, #2A2835 100%);
+      background: #302D3B;
+      padding: 0 40px;
       height: 68px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
+      justify-content: center;
+      border-bottom: 1px solid rgba(202,168,130,0.15);
       position: relative;
       overflow: hidden;
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     header::after {
@@ -84,7 +95,13 @@
       text-transform: uppercase;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
     }
 
     .logo-divider {
@@ -137,10 +154,10 @@
       align-items: center;
       gap: 7px;
       font-size: 11.5px;
-      color: rgba(255,255,255,0.6);
+      color: rgba(202,168,130,0.8);
       font-weight: 400;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.09);
+      background: rgba(202,168,130,0.07);
+      border: 1px solid rgba(202,168,130,0.2);
       padding: 5px 12px;
       border-radius: 20px;
       letter-spacing: 0.02em;
@@ -240,8 +257,8 @@
     }
 
     input:focus, select:focus {
-      border-color: var(--accent-light);
-      box-shadow: 0 0 0 3px var(--accent-dim);
+      border-color: var(--brand-tan);
+      box-shadow: 0 0 0 3px rgba(202,168,130,0.15);
       background: var(--surface);
     }
 
@@ -255,19 +272,19 @@
       width: 100%;
       height: 42px;
       margin-top: 6px;
-      background: var(--accent);
-      color: #FFFFFF;
+      background: var(--brand-tan);
+      color: var(--accent);
       border: none;
       border-radius: var(--radius);
       font-family: inherit;
       font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.03em;
+      font-weight: 600;
+      letter-spacing: 0.04em;
       cursor: pointer;
       transition: background 0.15s, transform 0.1s;
     }
 
-    .btn-primary:hover  { background: var(--accent-light); }
+    .btn-primary:hover  { background: var(--brand-tan-dk); color: #fff; }
     .btn-primary:active { transform: scale(0.99); }
     .btn-primary:disabled {
       opacity: 0.5;
@@ -382,7 +399,7 @@
 
     .confidence-bar-fill {
       height: 100%;
-      background: var(--accent);
+      background: var(--brand-tan);
       border-radius: 2px;
       width: 0;
       transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -512,8 +529,8 @@
     }
 
     .compare-row.model-row {
-      background: var(--accent-dim);
-      border-color: #c8d4df;
+      background: rgba(202,168,130,0.08);
+      border-color: rgba(202,168,130,0.25);
     }
 
     .compare-source-name {
@@ -625,60 +642,6 @@
     footer a { color: inherit; text-decoration: none; }
     footer a:hover { color: var(--accent); }
 
-    /* ── Feature strip ── */
-    .feature-strip {
-      background: var(--accent);
-      border-top: 1px solid rgba(255,255,255,0.06);
-      border-bottom: 1px solid rgba(0,0,0,0.12);
-      padding: 0 40px;
-      overflow-x: auto;
-    }
-
-    .feature-strip-inner {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      height: 48px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .feat {
-      display: flex;
-      align-items: baseline;
-      gap: 7px;
-      white-space: nowrap;
-      padding: 0 20px;
-    }
-
-    .feat:first-child { padding-left: 0; }
-    .feat:last-child  { padding-right: 0; }
-
-    .feat-label {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
-    }
-
-    .feat-value {
-      font-size: 12px;
-      font-weight: 400;
-      color: rgba(255,255,255,0.85);
-    }
-
-    .feat-sub {
-      font-size: 11px;
-      color: rgba(255,255,255,0.4);
-    }
-
-    .feat-divider {
-      width: 1px;
-      height: 18px;
-      background: rgba(255,255,255,0.12);
-      flex-shrink: 0;
-    }
 
     /* ── Responsive ── */
     @media (max-width: 780px) {
@@ -697,37 +660,27 @@
 <div class="shell">
 
   <header>
-    <div class="header-brand">
-      <div class="logo">
-        Callisto
-        <div class="logo-divider"></div>
-        <span class="logo-sub">Intelligent Vehicle Valuation</span>
+    <div class="header-inner">
+      <div class="header-brand">
+        <div class="logo">
+          <img src="/static/logo.png" alt="Callisto Tech" class="logo-icon" />
+          Vega
+          <div class="logo-divider"></div>
+          <span class="logo-sub">Intelligent Vehicle Valuation</span>
+        </div>
+        <div class="header-tagline">Precision pricing informed by market intelligence &amp; predictive analytics</div>
       </div>
-      <div class="header-tagline">Precision pricing informed by market intelligence &amp; predictive analytics</div>
-    </div>
-    <div class="header-right">
-      <div class="header-meta">
-        <span class="header-meta-label">Inference Engine</span>
-        <div class="status-pill">
-          <div class="status-dot" id="statusDot"></div>
-          <span id="statusText">Checking model...</span>
+      <div class="header-right">
+        <div class="header-meta">
+          <span class="header-meta-label">Inference Engine</span>
+          <div class="status-pill">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">Checking model...</span>
+          </div>
         </div>
       </div>
     </div>
   </header>
-
-  <!-- AI / ML feature strip -->
-  <div class="feature-strip">
-    <div class="feature-strip-inner">
-      <div class="feat">
-        <div class="feat-value">Trained on over 112,000 real vehicle listings</div>
-      </div>
-      <div class="feat-divider"></div>
-      <div class="feat">
-        <div class="feat-value">Dynamic and interactive with every user</div>
-      </div>
-    </div>
-  </div>
 
   <main>
     <!-- Form -->
@@ -838,14 +791,51 @@
             </div>
           </div>
 
-          <div class="field">
-            <label for="paint_color">Color</label>
-            <select id="paint_color" name="paint_color">
-              <option selected>white</option><option>black</option><option>silver</option>
-              <option>grey</option><option>blue</option><option>red</option>
-              <option>brown</option><option>green</option><option>orange</option>
-              <option>yellow</option><option>purple</option><option>custom</option>
-            </select>
+          <div class="field-row">
+            <div class="field">
+              <label for="paint_color">Color</label>
+              <select id="paint_color" name="paint_color">
+                <option selected>white</option><option>black</option><option>silver</option>
+                <option>grey</option><option>blue</option><option>red</option>
+                <option>brown</option><option>green</option><option>orange</option>
+                <option>yellow</option><option>purple</option><option>custom</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="zip_code">ZIP Code</label>
+              <input type="text" id="zip_code" name="zip_code" maxlength="5" placeholder="e.g. 90210" pattern="\d{5}" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="state">State</label>
+              <select id="state" name="state">
+                <option value="unknown" selected>— Select state —</option>
+                <option value="ak">Alaska</option>
+                <option value="al">Alabama</option>
+                <option value="ar">Arkansas</option>
+                <option value="az">Arizona</option>
+                <option value="ca">California</option>
+                <option value="co">Colorado</option>
+                <option value="ct">Connecticut</option>
+                <option value="dc">Washington D.C.</option>
+                <option value="de">Delaware</option>
+                <option value="fl">Florida</option>
+                <option value="ga">Georgia</option>
+                <option value="hi">Hawaii</option>
+                <option value="id">Idaho</option>
+                <option value="il">Illinois</option>
+                <option value="ma">Massachusetts</option>
+                <option value="nc">North Carolina</option>
+                <option value="ny">New York</option>
+                <option value="or">Oregon</option>
+                <option value="pa">Pennsylvania</option>
+                <option value="tx">Texas</option>
+                <option value="wa">Washington</option>
+                <option value="wi">Wisconsin</option>
+              </select>
+            </div>
           </div>
 
           <button type="submit" class="btn-primary" id="submitBtn">Get Valuation</button>
@@ -865,7 +855,6 @@
         <div class="result-body" id="resultBody" style="display:none">
           <div class="result-label">Estimated Market Value</div>
           <div class="result-price" id="resultPrice"></div>
-          <div class="range-note" id="resultRange"></div>
           <div class="confidence-bar-wrap">
             <div class="confidence-bar-label">
               <span>Model confidence</span>
@@ -966,7 +955,7 @@
   <footer>
     <span>
       &copy; 2026 <strong>Callisto Tech</strong> &mdash; All rights reserved.
-      Licensed under the <a href="/static/license.txt" target="_blank">Callisto Tech Proprietary License</a>.
+      Powered by <strong>Vega</strong> &mdash; <a href="/static/license.txt" target="_blank">Proprietary License</a>.
     </span>
     <span>Model: <span id="footerModel">—</span> &nbsp;|&nbsp; <a href="/docs" target="_blank">API Docs</a></span>
   </footer>
@@ -1037,11 +1026,24 @@
     btn.innerHTML = '<span class="spinner"></span>Valuing...';
 
     hideAll();
+    // Reset stale price so resubmit is always visibly fresh
+    $('resultPrice').innerHTML = '';
+    $('confidenceBar').style.width = '0';
+    $('resultMeta').innerHTML = '';
 
     const form = new FormData(e.target);
     const payload = Object.fromEntries(form.entries());
     payload.year     = parseInt(payload.year);
     payload.odometer = parseFloat(payload.odometer);
+
+    if (!payload.manufacturer) { showError('Please select a Make.'); btn.disabled = false; btn.textContent = 'Get Valuation'; return; }
+    if (!payload.type)         { showError('Please select a Body Type.'); btn.disabled = false; btn.textContent = 'Get Valuation'; return; }
+
+    // Show result card in loading state
+    $('resultEmpty').style.display = 'none';
+    $('resultBody').style.display  = 'block';
+    $('resultLabel') && ($('resultLabel').textContent = 'Calculating...');
+    $('resultPrice').innerHTML = '<span style="color:var(--text-muted);font-size:28px;font-weight:300">—</span>';
 
     try {
       const r = await fetch('/predict', {
@@ -1089,18 +1091,13 @@
     }).split('.');
     $('resultPrice').innerHTML = `$${dollars}<span class="cents">.${cents}</span>`;
 
-    // Range: +/- 12% (approximate model uncertainty at test MSE ~0.39 in log space)
-    const low  = Math.round(price * 0.88).toLocaleString('en-US');
-    const high = Math.round(price * 1.12).toLocaleString('en-US');
-    $('resultRange').textContent = `Typical range: $${low} – $${high}`;
-
     // Confidence bar — heuristic based on condition + title + mileage
     const conf = estimateConfidence(input);
     $('confidencePct').textContent = `${conf}%`;
     setTimeout(() => { $('confidenceBar').style.width = conf + '%'; }, 50);
 
     // Meta
-    const age = 2025 - parseInt(input.year);
+    const age = new Date().getFullYear() - parseInt(input.year);
     $('resultMeta').innerHTML = `
       <div class="meta-item">
         <div class="meta-label">Vehicle Age</div>
@@ -1247,7 +1244,7 @@
       <div class="compare-row model-row">
         <div>
           <div class="compare-source-name">Your Model</div>
-          <div class="compare-source-meta">${d.model_name} · Callisto prediction</div>
+          <div class="compare-source-meta">${d.model_name} · Vega prediction</div>
         </div>
         <div class="compare-source-price">${fmtPrice(d.model_prediction)}</div>
       </div>`;

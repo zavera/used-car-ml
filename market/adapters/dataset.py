@@ -38,13 +38,14 @@ class DatasetAdapter(PricingAdapter):
         files = sorted(glob.glob(os.path.join(self._raw_path, self._pattern)))
         if not files:
             raise FileNotFoundError(f"No CSV found at {self._raw_path}/{self._pattern}")
-        df = pd.read_csv(files[-1], usecols=["price", "year", "manufacturer", "condition"])
+        df = pd.read_csv(files[-1], usecols=["price", "year", "manufacturer", "condition", "state"])
         df = df.dropna(subset=["price", "year", "manufacturer"])
         df["price"] = pd.to_numeric(df["price"], errors="coerce")
         df["year"]  = pd.to_numeric(df["year"],  errors="coerce")
         df = df[df["price"].between(PRICE_MIN, PRICE_MAX)]
         df["manufacturer"] = df["manufacturer"].str.lower().str.strip()
         df["condition"]    = df["condition"].str.lower().str.strip()
+        df["state"]        = df["state"].str.lower().str.strip().fillna("")
         self._df = df
         logger.info("DatasetAdapter loaded %d rows from %s", len(df), files[-1])
         return self._df
@@ -58,29 +59,39 @@ class DatasetAdapter(PricingAdapter):
         year         = int(vehicle.get("year", 0))
         manufacturer = str(vehicle.get("manufacturer", "")).lower().strip()
         condition    = str(vehicle.get("condition", "")).lower().strip()
+        state        = str(vehicle.get("state", "")).lower().strip()
+        use_state    = state and state != "unknown" and state in df["state"].values
 
-        def _filter(yr_window: int, use_condition: bool) -> pd.Series:
+        def _filter(yr_window: int, use_condition: bool, state_filter: bool) -> pd.Series:
             mask = (
                 (df["manufacturer"] == manufacturer)
                 & df["year"].between(year - yr_window, year + yr_window)
             )
             if use_condition and condition:
                 mask &= df["condition"] == condition
+            if state_filter and use_state:
+                mask &= df["state"] == state
             return df.loc[mask, "price"].dropna()
 
-        subset = _filter(2, True)
+        # Try narrow: same state + condition + year ±2
+        subset = _filter(2, True, True) if use_state else _filter(2, True, False)
+        # Fall back: drop state filter but keep condition
         if len(subset) < MIN_MATCH:
-            subset = _filter(3, False)
+            subset = _filter(2, True, False)
+        # Fall back: drop condition too
+        if len(subset) < MIN_MATCH:
+            subset = _filter(3, False, False)
 
-        if len(subset) == 0:
+        if len(subset) < 3:
             return PriceEstimate(source=self.name, price=0, count=0, available=False,
-                                 note="Insufficient matches in training data")
+                                 note="Too few matches for a reliable estimate")
 
         p25 = int(np.percentile(subset, 25))
         p75 = int(np.percentile(subset, 75))
+        region_note = f" in {state.upper()}" if use_state and len(_filter(2, True, True)) >= MIN_MATCH else ""
         return PriceEstimate(
             source=self.name,
             price=float(np.median(subset)),
             count=len(subset),
-            note=f"p25 ${p25:,} – p75 ${p75:,}",
+            note=f"p25 ${p25:,} – p75 ${p75:,}{region_note}",
         )

@@ -22,9 +22,13 @@ apscheduler>=3.10.0
 
 # Config
 pyyaml>=6.0.1
+python-dotenv>=1.0.0
 
 # Drift reporting
 jinja2>=3.1.0
+
+# Market adapters
+playwright>=1.44.0
 
 # Dev / test
 pytest>=8.0.0
