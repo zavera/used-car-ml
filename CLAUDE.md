@@ -5,12 +5,12 @@ This codebase is the exclusive property of Callisto Tech, authored by Ambreen Za
 All code, model architecture, pipelines, and components are fully proprietary.
 
 ## Commits
-- Author: Ambreen Zaver <zaver.ambreen@gmail.com> — this must be the **zavera** GitHub account (matches the `origin` remote, github.com/zavera/used-car-ml). The machine's global git config defaults to a different identity (`azaver1 <azaver1@jh.edu>`), so this repo's **local** git config is intentionally pinned to the zavera identity:
+- Author: Ambreen Zaver <z.averambreen@gmail.com> — this must be the **zavera** GitHub account (matches the `origin` remote, github.com/zavera/used-car-ml). Note the email is `z.averambreen@gmail.com`, NOT `zaver.ambreen@gmail.com` (easy to mistype — these are two different addresses, and the latter resolves to a different GitHub account entirely). The machine's global git config defaults to a different identity (`azaver1 <azaver1@jh.edu>`), so this repo's **local** git config is intentionally pinned to the correct zavera identity:
   ```
   git config --local user.name "Ambreen Zaver"
-  git config --local user.email "zaver.ambreen@gmail.com"
+  git config --local user.email "z.averambreen@gmail.com"
   ```
-  Do not rely on `--author` overrides per-commit — the local config above makes every commit in this repo correct by default. If a fresh clone of this repo is missing that local config, set it before committing.
+  Do not rely on `--author` overrides per-commit — the local config above makes every commit in this repo correct by default. If a fresh clone of this repo is missing that local config, set it before committing. If you ever see commits attributed to an unexpected GitHub account (e.g. `azaver000`), the email is almost certainly wrong — double check it's exactly `z.averambreen@gmail.com`.
 - NEVER add `Co-Authored-By: Claude` or any AI attribution to commit messages.
 - Commit messages should reflect Callisto Tech authorship only.
 
