@@ -70,10 +70,14 @@ def get_aggregator() -> MarketAggregator:
     if _instance is not None:
         return _instance
 
+    import os
+
     from config_loader import load_config
     from market.adapters.dataset import DatasetAdapter
     from market.adapters.ebay import EbayAdapter
     from market.adapters.enterprise import EnterpriseAdapter
+    from market.adapters.marketcheck import MarketCheckAdapter
+    from market.adapters.tavily import TavilyAdapter
 
     cfg    = load_config()
     mc_cfg = cfg.get("market_compare", {})
@@ -87,8 +91,25 @@ def get_aggregator() -> MarketAggregator:
             filename_pattern=cfg["data"]["filename_pattern"],
         ))
 
-    if ac_cfg.get("ebay", {}).get("enabled", True):
-        app_id = mc_cfg.get("ebay_app_id", "YOUR_EBAY_APP_ID_HERE")
+    if ac_cfg.get("marketcheck", {}).get("enabled", True):
+        api_key = (
+            os.getenv("MARKETCHECK_API_KEY")
+            or ac_cfg.get("marketcheck", {}).get("api_key", "YOUR_MARKETCHECK_API_KEY_HERE")
+        )
+        adapters.append(MarketCheckAdapter(api_key=api_key))
+
+    if ac_cfg.get("tavily", {}).get("enabled", True):
+        api_key = (
+            os.getenv("TAVILY_API_KEY")
+            or ac_cfg.get("tavily", {}).get("api_key", "YOUR_TAVILY_API_KEY_HERE")
+        )
+        adapters.append(TavilyAdapter(api_key=api_key))
+
+    if ac_cfg.get("ebay", {}).get("enabled", False):
+        app_id = (
+            os.getenv("EBAY_APP_ID")
+            or ac_cfg.get("ebay", {}).get("app_id", "YOUR_EBAY_PRODUCTION_APP_ID_HERE")
+        )
         adapters.append(EbayAdapter(app_id=app_id))
 
     if ac_cfg.get("enterprise", {}).get("enabled", False):
